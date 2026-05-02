@@ -15,8 +15,8 @@ The goal of these exercises is to practice writing queries, understanding relati
 To strengthen my understanding of database concepts and improve problem-solving skills using SQL.
 
 ## 🛠️ Tools
-- PostgreSQL
-- SQL
+- PostgreSQL,MongDB
+- SQL,NoSQL
 
 ---
 

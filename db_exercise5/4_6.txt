@@ -1,0 +1,31 @@
+db.getCollection('order_w_lines').aggregate(
+  [
+    {
+      $group: {
+        _id: '$customer_id',
+        num: { $sum: 1 }
+      }
+    },
+    {
+      $lookup: {
+        from: 'customer',
+        localField: '_id',
+        foreignField: 'customer_id',
+        as: 'info'
+      }
+    },
+    { $unwind: { path: '$info' } },
+    {
+      $sort: { num: -1, 'info.customer_name': 1 }
+    },
+    { $limit: 1 },
+    {
+      $project: {
+        _id: 0,
+        customer_id: '$_id',
+        customer_name: '$info.customer_name'
+      }
+    }
+  ],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);

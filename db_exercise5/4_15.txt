@@ -1,0 +1,10 @@
+//for customer entity
+
+db["customer"].deleteMany(
+  {customer_id : 10001}
+)
+
+//for order_w_lines entity
+db["order_w_lines"].deleteMany(
+  {customer_id : 10001}
+)

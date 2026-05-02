@@ -1,0 +1,33 @@
+db.getCollection('order_w_lines').aggregate(
+  [
+    { $unwind: { path: '$order_lines' } },
+    {
+      $group: {
+        _id: '$order_lines.product_id',
+        order_quantity: {
+          $sum: '$order_lines.ordered_quantity'
+        }
+      }
+    },
+    { $sort: { order_quantity: -1 } },
+    { $limit: 1 },
+    {
+      $lookup: {
+        from: 'product',
+        localField: '_id',
+        foreignField: 'product_id',
+        as: 'info'
+      }
+    },
+    { $unwind: { path: '$info' } },
+    {
+      $project: {
+        _id: 0,
+        product_id: '$_id',
+        product_name: '$info.product_name',
+        order_quantity: '$order_quantity'
+      }
+    }
+  ],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);

@@ -1,0 +1,30 @@
+db.getCollection('order_w_lines').aggregate(
+  [
+    {
+      $match: {
+        order_date: {
+          $gte: '2020-01-10 00:00:00',
+          $lte: '2020-01-15 23:59:59'
+        }
+      }
+    },
+    { $group: { _id: '$customer_id' } },
+    {
+      $lookup: {
+        from: 'customer',
+        localField: '_id',
+        foreignField: 'customer_id',
+        as: 'info'
+      }
+    },
+    { $unwind: { path: '$info' } },
+    {
+      $project: {
+        _id: 0,
+        customer_id: '$_id',
+        customer_name: '$info.customer_name'
+      }
+    }
+  ],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
